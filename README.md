@@ -1,7 +1,5 @@
 # DiBISO reporting
 
-*Archive:* new repository at https://github.com/dibiso-upsaclay/dibisoreporting
-
 A Python library for generating bibliometric reports, developed at the [DiBISO](https://www.bibliotheques.universite-paris-saclay.fr/en/department-libraries-information-and-open-science-dibiso-and-its-missions).
 
 The library contains the following submodules:
