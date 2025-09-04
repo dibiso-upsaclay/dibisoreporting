@@ -36,7 +36,11 @@ This comes from the default value of ``default_visualizations`` :
             },
             { "name": "europe", "resolution": 50, "map_zoom": True }
         ],
-        "CollaborationNames": [{}],
+        "CollaborationNames": [
+            {
+                "countries_to_exclude": ["fr"]
+            }
+        ],
         "Conferences": [{}],
         "EuropeanProjects": [{}],
         "Journals": [],
