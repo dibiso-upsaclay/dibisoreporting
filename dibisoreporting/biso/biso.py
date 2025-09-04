@@ -1,4 +1,6 @@
 from datetime import datetime
+import requests
+import logging
 
 from dibisoplot.biso import AnrProjects
 from dibisoplot.biso import Chapters
@@ -192,6 +194,12 @@ class Biso(DibisoReporting):
             import_default_visualizations as follows: ``import_default_visualizations = {"Conferences": []}``.
         :type import_default_visualizations: bool
         """
+
+        # check that the HAL collection ID is valid
+        url = f"https://api.archives-ouvertes.fr/search/?q=collCode_s:{self.entity_id}&wt=json&rows=0"
+        coll_exists = requests.get(url).json().get('response',{}).get('numFound', 0) > 0
+        if not coll_exists:
+            logging.warning(f"Collection ID {self.entity_id} does not exist in HAL.")
 
         self.add_marco("reportyear", self.year)
         self.add_marco("labacronym", self.lab_acronym)
