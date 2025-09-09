@@ -38,6 +38,8 @@ class DibisoReporting:
 
     :cvar figures_dir_name: Directory where figures are stored.
     :cvar class_mapping: Dictionary that maps class names to actual classes
+    :cvar default_plot_main_color: Default color for the main plot (blue)
+    :cvar default_latexmkrc_file_content: Default content of the latexmkrc file.
     :cvar default_visualizations: Dictionary contains each type of plot to include in the report with the parameters of
         each plot.
     """
@@ -46,6 +48,8 @@ class DibisoReporting:
 
     # Map class names to actual classes
     class_mapping = {}
+
+    default_plot_main_color = "blue"
 
     default_latexmkrc_file_content = """$pdflatex = 'lualatex %O %S --shell-escape';
 $pdf_mode = 1;
@@ -69,6 +73,7 @@ $postscript_mode = $dvi_mode = 0;
             latexmkrc_file_url: str | None = None,
             max_entities: int | None = 1000,
             max_plotted_entities: int = 25,
+            plot_main_color: str | None = None,
             root_path: str | None = None,
     ):
         """
@@ -110,8 +115,10 @@ $postscript_mode = $dvi_mode = 0;
         :type max_entities: int | None, optional
         :param max_plotted_entities: Maximum number of bars in the plot or rows in the table. Default to 25.
         :type max_plotted_entities: int, optional
+        :param plot_main_color: Main color used in the plots. Default to "blue". Plotly color.
+        :type plot_main_color: str, optional
         :param root_path: Path to the root directory where the report and figures will be generated.
-        :type root_path: str
+        :type root_path: str, optional
         """
 
         self.entity_id = entity_id
@@ -128,6 +135,10 @@ $postscript_mode = $dvi_mode = 0;
         self.latexmkrc_file_url = latexmkrc_file_url
         self.max_entities = max_entities
         self.max_plotted_entities = max_plotted_entities
+        if plot_main_color is None:
+            self.plot_main_color = self.default_plot_main_color
+        else:
+            self.plot_main_color = plot_main_color
         if root_path is None:
             raise AttributeError('root_path cannot be None')
         if isdir(dirname(abspath(root_path))):
@@ -437,10 +448,15 @@ $postscript_mode = $dvi_mode = 0;
                     params["max_entities"] = self.max_entities
                 if "max_plotted_entities" not in params:
                     params["max_plotted_entities"] = self.max_plotted_entities
+                if "main_color" not in params:
+                    params["main_color"] = self.plot_main_color
 
                 # Generate the figure
+                # Instantiate the visualization class
                 viz = viz_class(**params)
+                # Fetch the data and get the stats
                 stats = viz.fetch_data()
+                # Generate the figure
                 fig = viz.get_figure()
 
                 # Determine the file name

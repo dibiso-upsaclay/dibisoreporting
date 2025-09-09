@@ -20,6 +20,7 @@ class Biso(DibisoReporting):
     Class to generate the BiSO report
 
     :cvar class_mapping: Dictionary that maps class names to actual classes
+    :cvar default_plot_main_color: Default color for the main plot ()
     :cvar default_visualizations: Dictionary contains each type of plot to include in the report with the parameters of
         each plot.
     """
@@ -37,6 +38,8 @@ class Biso(DibisoReporting):
         "WorksType": WorksType
     }
 
+    default_plot_main_color = "#004e7d"
+
     # an empty list means that the visualization won't be done, an empty dictionary in a list means that the
     # visualization will be done with the default values
     default_visualizations =  {
@@ -50,9 +53,13 @@ class Biso(DibisoReporting):
                     "collaborations_nb": "collaborationsnb",
                     "institutions_nb": "institutionsnb",
                     "countries_nb": "countriesnb"
-                }
+                },
             },
-            { "name": "europe", "resolution": 50, "map_zoom": True }
+            {
+                "name": "europe",
+                "resolution": 50,
+                "map_zoom": True,
+            }
         ],
         "CollaborationNames": [
             {
