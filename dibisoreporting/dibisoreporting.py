@@ -47,6 +47,11 @@ class DibisoReporting:
     # Map class names to actual classes
     class_mapping = {}
 
+    default_latexmkrc_file_content = """$pdflatex = 'lualatex %O %S --shell-escape';
+$pdf_mode = 1;
+$postscript_mode = $dvi_mode = 0;
+"""
+
     # an empty list means that the visualization won't be done, an empty dictionary in a list means that the
     # visualization will be done with the default values
     default_visualizations =  {}
@@ -60,6 +65,8 @@ class DibisoReporting:
             latex_main_file_url: str | None = None,
             latex_template_path: str | None = None,
             latex_template_url: str | None = None,
+            latexmkrc_file_path: str | None = None,
+            latexmkrc_file_url: str | None = None,
             max_entities: int | None = 1000,
             max_plotted_entities: int = 25,
             root_path: str | None = None,
@@ -87,6 +94,15 @@ class DibisoReporting:
             release and extract it to get the template files. Default to None. If None, doesn't try getting the template
             from the URL.
         :type latex_template_url: str | None, optional
+        :param latexmkrc_file_path: Path to a latexmkrc file. This file contains the LaTeX compiler configuration for
+            Overleaf. It will copy the main file to root_path. Default to None. If None, doesn't try getting the main
+            file from the path. If both latexmkrc_file_path and latexmkrc_file_url are not None, the library will first
+            try to get the main file from the path. If both latexmkrc_file_path and latexmkrc_file_url are None, a
+            default latexmkrc will be created.
+        :type latexmkrc_file_path: str | None, optional
+        :param latexmkrc_file_url: URL to download a latexmkrc file. It will download the file directly to root_path.
+            Default to None. If None, doesn't try getting the main file from the URL.
+        :type latexmkrc_file_url: str | None, optional
         :param max_entities: Default maximum number of entities used to create the plot. Default 1000.
             Set to None to disable the limit. This value limits the number of queried entities when doing analysis.
             For example, when creating the collaboration map, it limits the number of works to query from HAL to extract
@@ -108,6 +124,8 @@ class DibisoReporting:
         self.latex_main_file_url = latex_main_file_url
         self.latex_template_path = latex_template_path
         self.latex_template_url = latex_template_url
+        self.latexmkrc_file_path = latexmkrc_file_path
+        self.latexmkrc_file_url = latexmkrc_file_url
         self.max_entities = max_entities
         self.max_plotted_entities = max_plotted_entities
         if root_path is None:
@@ -124,62 +142,96 @@ class DibisoReporting:
         self.macros = [] # macros to include for the report generation
 
 
-    def get_latex_main_file_from_path(self):
+    def get_file_from_path(self, file_path, file_type):
         """
-        Get the LaTeX main file from a local path.
-        It copies the main file from the specified path to the root path of the project.
+        If file_path is not None, get the file from a local path.
+        It copies the file from the specified path to the root path of the project.
+        Checks the file type based on its extension and rename latexmkrc files.
+
+        :param file_path: The path to the file.
+        :type file_path: str
+        :param file_type: The file type ("main_tex" or "latexmkrc").
+        :type file_type: str
+        :return: The path to the LaTeX main file.
         """
-        if self.latex_main_file_path is None:
-            raise ValueError("No LaTeX main file path provided")
+        if file_path is None:
+            raise ValueError(f"No {file_type} file path provided")
 
-        if not os.path.exists(self.latex_main_file_path):
-            raise FileNotFoundError(f"LaTeX main file path does not exist: {self.latex_main_file_path}")
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"{file_type} file path does not exist: {file_path}")
 
-        if not os.path.isfile(self.latex_main_file_path):
-            raise ValueError(f"LaTeX main file path is not a file: {self.latex_main_file_path}")
+        if not os.path.isfile(file_path):
+            raise ValueError(f"{file_type} file path is not a file: {file_path}")
 
         try:
-            # Get the filename from the source path
-            filename = os.path.basename(self.latex_main_file_path)
+            log.info(f"Getting {file_type} file from {file_path}...")
+
+            if file_type == "latermkrc":
+                filename = "latexmkrc"
+            else:
+                # Get the filename from the source path
+                filename = os.path.basename(file_path)
             dest_file = os.path.join(self.root_path, filename)
 
             # Copy the file to the root path
-            shutil.copy2(self.latex_main_file_path, dest_file)
+            shutil.copy2(file_path, dest_file)
 
-            log.info(f"Successfully got the LaTeX main file from the path")
+            log.info(f"Successfully added the {file_path} file from the path to the LaTeX project")
 
         except Exception as e:
-            raise RuntimeError(f"Failed to copy LaTeX main file from path: {e}")
+            raise RuntimeError(f"Failed to copy {file_path} file from path: {e}")
 
 
-    def get_latex_main_file_from_url(self):
+    def get_file_from_url(self, file_url, file_type):
         """
-        Get the LaTeX main file from a URL.
-        It downloads the file directly from the URL and saves it to the root path of the project.
+        If file_url is not None, get the file from a URL.
+        It downloads the file from the specified URL to the root path of the project.
+        Checks the file type based on its extension and rename latexmkrc files.
+
+        :param file_url: The URL of the file.
+        :type file_url: str
+        :param file_type: The file type ("main_tex" or "latexmkrc").
+        :type file_type: str
+        :return: The path to the LaTeX main file.
         """
-        if self.latex_main_file_url is None:
-            raise ValueError("No LaTeX main file URL provided")
+        if file_url is None:
+            raise ValueError(f"No {file_type} file URL provided")
 
         try:
-            log.info(f"Downloading LaTeX main file from {self.latex_main_file_url}...")
+            log.info(f"Downloading {file_type} file from {file_url}...")
 
-            # Extract filename from URL or use a default name
-            filename = os.path.basename(self.latex_main_file_url.split('?')[0])
-            if not filename or not filename.endswith('.tex'):
-                filename = "main.tex"
+            if file_type == "latexmkrc":
+                filename = "latexmkrc"
+            else:
+                # Extract filename from URL or use a default name
+                filename = os.path.basename(file_url.split('?')[0])
+                if not filename or not filename.endswith('.tex'):
+                    filename = "main.tex"
 
             dest_file = os.path.join(self.root_path, filename)
 
             # Download the file using wget
-            wget_cmd = f"wget -q -O {dest_file} {self.latex_main_file_url}"
+            wget_cmd = f"wget -q -O {dest_file} {file_url}"
             subprocess.run(wget_cmd, shell=True, check=True)
 
-            log.info(f"Successfully downloaded the LaTeX main file")
+            log.info(f"Successfully downloaded the {file_type} file")
 
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Failed to execute wget command: {e}")
         except Exception as e:
-            raise RuntimeError(f"Failed to download LaTeX main file: {e}")
+            raise RuntimeError(f"Failed to download {file_type} file: {e}")
+
+
+    def create_default_latexmkrc_file(self):
+        """
+        Create the default latexmkrc file in the root path of the project.
+        """
+
+        # Write the content to the file
+        with open(os.path.join(self.root_path, "latexmkrc"), "w") as file:
+            file.write(self.default_latexmkrc_file_content)
+
+        log.info(f"The latexmkrc file has been created with the default content.")
 
 
     def get_latex_template_from_path(self):
@@ -432,28 +484,83 @@ class DibisoReporting:
         with open(join(self.root_path, "names_and_macros.tex"), 'w') as f:
             f.write(macros_text)
 
-        # get the main file
-        try:
-            self.get_latex_main_file_from_path()
-        except:
+        # get the main tex file
+        if self.latex_main_file_url is None and self.latex_main_file_path is None:
+            warnings.warn(
+                "No main tex file path (latex_main_file_path) or URL provided (latex_main_file_url). "
+                "The report will be produced without the main tex file."
+            )
+        else:
             try:
-                self.get_latex_main_file_from_url()
-            except:
-                if self.latex_main_file_url is not None or self.latex_main_file_path is not None:
+                self.get_file_from_path(self.latex_main_file_path, "main_tex")
+            except Exception as e:
+                error_msg = str(e)
+                # Check if the error is not one of the expected ones when there is no main tex file
+                if ("No main_tex file path provided" not in error_msg) and \
+                   ("main_tex file path does not exist:" not in error_msg) and \
+                   ("main_tex file path is not a file:" not in error_msg):
+                    log.error(error_msg)
+                    warnings.warn("Could not get the LaTeX main tex file from the path, trying to get it from the URL")
+                try:
+                    self.get_file_from_url(self.latex_main_file_url, "main_tex")
+                except Exception as url_e:
+                    url_error_msg = str(url_e)
+                    log.error(url_error_msg)
+                    warnings.warn("Failed to add the main tex file to the project, ignoring this file")
+
+        # get the latexmkrc file
+        if self.latexmkrc_file_url is None and self.latexmkrc_file_path is None:
+            logging.info(
+                "No latexmkrc file path (latexmkrc_file_path) or URL (latexmkrc_file_url) provided. "
+                "Creating default latexmkrc file."
+            )
+            self.create_default_latexmkrc_file()
+        else:
+            try:
+                self.get_file_from_path(self.latexmkrc_file_path, "latexmkrc")
+            except Exception as e:
+                error_msg = str(e)
+                # Check if the error is not one of the expected ones when there is no latexmkrc file
+                if ("No latexmkrc file path provided" not in error_msg) and \
+                   ("latexmkrc file path does not exist:" not in error_msg) and \
+                   ("latexmkrc file path is not a file:" not in error_msg):
+                    log.error(error_msg)
+                    warnings.warn("Could not get the LaTeX latexmkrc file from the path, trying to get it from the URL")
+                try:
+                    self.get_file_from_url(self.latexmkrc_file_url, "latexmkrc")
+                except Exception as url_e:
+                    url_error_msg = str(url_e)
+                    log.error(url_error_msg)
                     warnings.warn(
-                        "Could not find the LaTeX main file from the path or the URL. "
-                        "The report will be produced without the LaTeX main file."
+                        "Failed to add the latexmkrc file to the project from latexmkrc_file_path or latexmkrc_file_url."
+                        "Creating the default latexmkrc file."
                     )
+                    self.create_default_latexmkrc_file()
+
 
         # get the template
-        try:
-            self.get_latex_template_from_path()
-        except:
+        if self.latex_template_url is None and self.latex_template_path is None:
+            logging.info(
+                "No LaTeX template path (latex_template_path) or URL (latex_template_url) provided. "
+                "The report will be produced without the LaTeX template."
+            )
+        else:
             try:
-                self.get_latex_template_from_github()
-            except:
-                if self.latex_template_url is not None or self.latex_template_url is not None:
+                self.get_latex_template_from_path()
+            except Exception as e:
+                error_msg = str(e)
+                # Check if the error is not one of the expected ones when there is no LaTeX template directory
+                if ("No LaTeX template path provided" not in error_msg) and \
+                   ("LaTeX template path does not exist:" not in error_msg) and \
+                   ("LaTeX template path is not a directory:" not in error_msg):
+                    log.error(error_msg)
+                    warnings.warn("Could not get the LaTeX template from the path, trying to get it from the URL")
+                try:
+                    self.get_latex_template_from_github()
+                except Exception as url_e:
+                    url_error_msg = str(url_e)
+                    log.error(url_error_msg)
                     warnings.warn(
-                        "Could not find the LaTeX template from the path or the github repository. "
-                        "The report will be produced withtout the LaTeX template."
+                        "Failed to add the LaTeX template to the project from latex_template_url or "
+                        "latex_template_path. The report will be produced without the LaTeX template."
                     )
