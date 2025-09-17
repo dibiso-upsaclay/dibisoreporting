@@ -32,9 +32,13 @@ This comes from the default value of ``default_visualizations`` :
                     "collaborations_nb": "collaborationsnb",
                     "institutions_nb": "institutionsnb",
                     "countries_nb": "countriesnb"
-                }
+                },
             },
-            { "name": "europe", "resolution": 50, "map_zoom": True }
+            {
+                "name": "europe",
+                "resolution": 50,
+                "map_zoom": True,
+            }
         ],
         "CollaborationNames": [
             {
@@ -43,8 +47,25 @@ This comes from the default value of ``default_visualizations`` :
         ],
         "Conferences": [{}],
         "EuropeanProjects": [{}],
-        "Journals": [],
-        "OpenAccessWorks": [{}],
+        "Journals": [
+            {
+                "stats_to_save": {
+                    "nb_works": "bsojournalsnbworks",
+                    "nb_works_found_in_bso": "bsojournalsnbworksfoundinbso",
+                    "nb_journals": "bsojournalsnbjournals",
+                    "bso_version": "bsojournalsbsoversion"
+                },
+            }
+        ],
+        "JournalsHal": [{}],
+        "OpenAccessWorks": [
+            {
+                "stats_to_save": {
+                    "oa_works_period": "oaworksperiod"
+                }
+            }
+        ],
+        "PrivateSectorCollaborations": [{}],
         "WorksType": [{}],
     }
 
