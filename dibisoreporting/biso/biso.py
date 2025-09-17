@@ -72,7 +72,16 @@ class Biso(DibisoReporting):
         ],
         "Conferences": [{}],
         "EuropeanProjects": [{}],
-        "Journals": [{}],
+        "Journals": [
+            {
+                "stats_to_save": {
+                    "nb_works": "bsojournalsnbworks",
+                    "nb_works_found_in_bso": "bsojournalsnbworksfoundinbso",
+                    "nb_journals": "bsojournalsnbjournals",
+                    "bso_version": "bsojournalsbsoversion"
+                },
+            }
+        ],
         "JournalsHal": [{}],
         "OpenAccessWorks": [
             {
@@ -222,6 +231,7 @@ class Biso(DibisoReporting):
             logging.warning(f"Collection ID {self.entity_id} does not exist in HAL.")
 
         self.add_marco("reportyear", self.year)
+        self.add_marco("halcollectionid", self.entity_id)
         self.add_marco("labacronym", self.lab_acronym)
         self.add_marco("labfullname", self.lab_full_name)
         self.add_marco("datafetchdate", self.data_fetch_date)
