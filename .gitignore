@@ -16,3 +16,5 @@ sphinx-doc/notebooks/test_report/
 
 docs
 
+*.env
+
