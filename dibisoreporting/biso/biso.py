@@ -9,7 +9,9 @@ from dibisoplot.biso import CollaborationNames
 from dibisoplot.biso import Conferences
 from dibisoplot.biso import EuropeanProjects
 from dibisoplot.biso import Journals
+from dibisoplot.biso import JournalsHal
 from dibisoplot.biso import OpenAccessWorks
+from dibisoplot.biso import PrivateSectorCollaborations
 from dibisoplot.biso import WorksType
 
 from dibisoreporting import DibisoReporting
@@ -34,7 +36,9 @@ class Biso(DibisoReporting):
         "Conferences": Conferences,
         "EuropeanProjects": EuropeanProjects,
         "Journals": Journals,
+        "JournalsHal": JournalsHal,
         "OpenAccessWorks": OpenAccessWorks,
+        "PrivateSectorCollaborations": PrivateSectorCollaborations,
         "WorksType": WorksType
     }
 
@@ -68,7 +72,8 @@ class Biso(DibisoReporting):
         ],
         "Conferences": [{}],
         "EuropeanProjects": [{}],
-        "Journals": [],
+        "Journals": [{}],
+        "JournalsHal": [{}],
         "OpenAccessWorks": [
             {
                 "stats_to_save": {
@@ -76,6 +81,7 @@ class Biso(DibisoReporting):
                 }
             }
         ],
+        "PrivateSectorCollaborations": [{}],
         "WorksType": [{}],
     }
 
@@ -94,6 +100,7 @@ class Biso(DibisoReporting):
             max_plotted_entities: int = 25,
             root_path: str | None = None,
             watermark_text: str = "",
+            **kwargs
     ):
         """
         Initialize the Biso class with the given parameters.
@@ -154,6 +161,8 @@ class Biso(DibisoReporting):
         self.watermark_text = watermark_text
 
         self.data_fetch_date = datetime.now().strftime("%d/%m/%Y")
+
+        self.kwargs = kwargs
 
 
     def add_marco(self, name, value):

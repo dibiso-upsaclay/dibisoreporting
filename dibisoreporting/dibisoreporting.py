@@ -75,6 +75,7 @@ $postscript_mode = $dvi_mode = 0;
             max_plotted_entities: int = 25,
             plot_main_color: str | None = None,
             root_path: str | None = None,
+            **kwargs,
     ):
         """
         Initialize the Biso class with the given parameters.
@@ -151,6 +152,8 @@ $postscript_mode = $dvi_mode = 0;
 
         self.macros_variables = {} # variables to include in the macros for the report generation
         self.macros = [] # macros to include for the report generation
+
+        self.kwargs = kwargs
 
 
     def get_file_from_path(self, file_path, file_type):
@@ -453,7 +456,7 @@ $postscript_mode = $dvi_mode = 0;
 
                 # Generate the figure
                 # Instantiate the visualization class
-                viz = viz_class(**params)
+                viz = viz_class(**params, **self.kwargs)
                 # Fetch the data and get the stats
                 stats = viz.fetch_data()
                 # Generate the figure
