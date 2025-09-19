@@ -1,7 +1,7 @@
 from datetime import datetime
 import logging
 import os
-from os.path import dirname, join, isdir, abspath, split
+from os.path import dirname, join, isdir, abspath
 import re
 import shutil
 import subprocess
@@ -9,8 +9,8 @@ import tempfile
 import warnings
 import zipfile
 
-from pypdf import PdfReader, PdfWriter
-from pdfCropMargins import crop
+from dibisoreporting.utils import fix_plotly_pdf_export
+
 
 logging.captureWarnings(True)
 # define a custom logging
@@ -18,18 +18,6 @@ log = logging.getLogger(__name__)
 # log.addHandler(logging.StreamHandler())
 # log_oa.addHandler(logging.FileHandler(__name__ + ".log"))
 log.setLevel(logging.INFO)
-
-def fix_plotly_pdf_export(pdf_file_path):
-    pdf_reader = PdfReader(pdf_file_path)
-    pdf_writer = PdfWriter()
-    first_page = pdf_reader.pages[0]
-    pdf_writer.add_page(first_page)
-    with open(pdf_file_path, 'wb') as output_pdf:
-        pdf_writer.write(output_pdf)
-    tmp_pdf_file_path = join(split(pdf_file_path)[0], "tmp-" + split(pdf_file_path)[1])
-    crop(["-o", tmp_pdf_file_path, "-p", "0", pdf_file_path])
-    os.remove(pdf_file_path)
-    os.rename(tmp_pdf_file_path, pdf_file_path)
 
 
 class DibisoReporting:

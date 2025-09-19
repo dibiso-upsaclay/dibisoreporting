@@ -16,6 +16,8 @@ from dibisoplot.biso import WorksType
 
 from dibisoreporting import DibisoReporting
 
+from dibisoreporting.utils import escape_for_latex
+
 
 class Biso(DibisoReporting):
     """
@@ -230,12 +232,12 @@ class Biso(DibisoReporting):
         if not coll_exists:
             logging.warning(f"Collection ID {self.entity_id} does not exist in HAL.")
 
-        self.add_marco("reportyear", self.year)
-        self.add_marco("halcollectionid", self.entity_id)
-        self.add_marco("labacronym", self.lab_acronym)
-        self.add_marco("labfullname", self.lab_full_name)
-        self.add_marco("datafetchdate", self.data_fetch_date)
-        self.add_marco("watermarktext", self.watermark_text)
+        self.add_marco("reportyear", escape_for_latex(str(self.year)))
+        self.add_marco("halcollectionid", escape_for_latex(self.entity_id))
+        self.add_marco("labacronym", escape_for_latex(self.lab_acronym))
+        self.add_marco("labfullname", escape_for_latex(self.lab_full_name))
+        self.add_marco("datafetchdate", escape_for_latex(self.data_fetch_date))
+        self.add_marco("watermarktext", escape_for_latex(self.watermark_text))
         self.macros.append("")
 
         super().generate_report(visualizations_to_make, import_default_visualizations)
