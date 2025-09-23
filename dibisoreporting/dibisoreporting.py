@@ -472,13 +472,20 @@ $postscript_mode = $dvi_mode = 0;
                     if viz_type == "CollaborationMap":
                         fix_plotly_pdf_export(join(self.fig_dir_path, file_name))
 
+                # if there is info from the plot, save it in the macro [name]info
+                if "info" in stats.keys():
+                    if name:
+                        base_name = re.sub( '(?<!^)(?=[A-Z])', '', viz_class.__name__).lower() + name
+                    else:
+                        base_name = re.sub( '(?<!^)(?=[A-Z])', '', viz_class.__name__).lower()
+                    stats_to_save["info"] = base_name + "info"
                 # save stats:
                 for var in stats_to_save.items():
-                    name = var[1]
+                    stat_name = var[1]
                     val = stats.get(var[0])
-                    if name in self.macros_variables.keys():
-                        warnings.warn(f"Macro variable {name} already exists. Overwriting.")
-                    self.macros_variables[name] = val
+                    if stat_name in self.macros_variables.keys():
+                        warnings.warn(f"Macro variable {stat_name} already exists. Overwriting.")
+                    self.macros_variables[stat_name] = val
 
         for macro_name, macro_value in self.macros_variables.items():
             if macro_value is None:
