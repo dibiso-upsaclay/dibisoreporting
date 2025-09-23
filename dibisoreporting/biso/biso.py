@@ -49,7 +49,11 @@ class Biso(DibisoReporting):
     # an empty list means that the visualization won't be done, an empty dictionary in a list means that the
     # visualization will be done with the default values
     default_visualizations =  {
-        "AnrProjects": [{}],
+        "AnrProjects": [
+            {
+                "max_plotted_entities": 20
+            }
+        ],
         "Chapters": [{}],
         "CollaborationMap": [
             {
@@ -69,11 +73,20 @@ class Biso(DibisoReporting):
         ],
         "CollaborationNames": [
             {
-                "countries_to_exclude": ["fr"]
+                "countries_to_exclude": ["fr"],
+                "max_plotted_entities": 40
             }
         ],
-        "Conferences": [{}],
-        "EuropeanProjects": [{}],
+        "Conferences": [
+            {
+                "max_plotted_entities": 40
+            }
+        ],
+        "EuropeanProjects": [
+            {
+                "max_plotted_entities": 20
+            }
+        ],
         "Journals": [
             {
                 "stats_to_save": {
@@ -84,7 +97,11 @@ class Biso(DibisoReporting):
                 },
             }
         ],
-        "JournalsHal": [{}],
+        "JournalsHal": [
+            {
+                "max_plotted_entities": 40
+            }
+        ],
         "OpenAccessWorks": [
             {
                 "stats_to_save": {
@@ -92,7 +109,11 @@ class Biso(DibisoReporting):
                 }
             }
         ],
-        "PrivateSectorCollaborations": [{}],
+        "PrivateSectorCollaborations": [
+            {
+                "max_plotted_entities": 35
+            }
+        ],
         "WorksType": [{}],
     }
 
