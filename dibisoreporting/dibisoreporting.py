@@ -55,6 +55,8 @@ $postscript_mode = $dvi_mode = 0;
             year: int | None = None,
             latex_main_file_path: str | None = None,
             latex_main_file_url: str | None = None,
+            latex_biblio_file_path: str | None = None,
+            latex_biblio_file_url: str | None = None,
             latex_template_path: str | None = None,
             latex_template_url: str | None = None,
             latexmkrc_file_path: str | None = None,
@@ -80,6 +82,14 @@ $postscript_mode = $dvi_mode = 0;
         :param latex_main_file_url: URL to download a single LaTeX main file. It will download the file directly
             to root_path. Default to None. If None, doesn't try getting the main file from the URL.
         :type latex_main_file_url: str | None, optional
+        :param latex_biblio_file_path: Path to a single LaTeX biblio file. This file is the one to use to compile the
+            bibliography. It will copy the biblio file to root_path. Default to None. If None, doesn't try getting the
+            biblio file from the path. If both latex_biblio_file_path and latex_biblio_file_url are not None, the
+            library will first try to get the biblio file from the path.
+        :type latex_biblio_file_path: str | None, optional
+        :param latex_biblio_file_url: URL to download a single LaTeX biblio file. It will download the file directly
+            to root_path. Default to None. If None, doesn't try getting the biblio file from the URL.
+        :type latex_biblio_file_url: str | None, optional
         :param latex_template_path: Path to the LaTeX template files. It will copy the templates files to root_path.
             Default to None. If None, doesn't try getting the template from the path. If both latex_template_path and
             latex_template_url are not None, the library will first try to get the template from the path.
@@ -118,6 +128,8 @@ $postscript_mode = $dvi_mode = 0;
             self.year = year
         self.latex_main_file_path = latex_main_file_path
         self.latex_main_file_url = latex_main_file_url
+        self.latex_biblio_file_path = latex_biblio_file_path
+        self.latex_biblio_file_url = latex_biblio_file_url
         self.latex_template_path = latex_template_path
         self.latex_template_url = latex_template_url
         self.latexmkrc_file_path = latexmkrc_file_path
@@ -144,7 +156,7 @@ $postscript_mode = $dvi_mode = 0;
         self.kwargs = kwargs
 
 
-    def get_file_from_path(self, file_path, file_type):
+    def get_file_from_path(self, file_path: str, file_type: str):
         """
         If file_path is not None, get the file from a local path.
         It copies the file from the specified path to the root path of the project.
@@ -152,7 +164,7 @@ $postscript_mode = $dvi_mode = 0;
 
         :param file_path: The path to the file.
         :type file_path: str
-        :param file_type: The file type ("main_tex" or "latexmkrc").
+        :param file_type: The file type ("tex" or "latexmkrc").
         :type file_type: str
         :return: The path to the LaTeX main file.
         """
@@ -184,7 +196,7 @@ $postscript_mode = $dvi_mode = 0;
             raise RuntimeError(f"Failed to copy {file_path} file from path: {e}")
 
 
-    def get_file_from_url(self, file_url, file_type):
+    def get_file_from_url(self, file_url: str, file_type: str):
         """
         If file_url is not None, get the file from a URL.
         It downloads the file from the specified URL to the root path of the project.
@@ -192,7 +204,7 @@ $postscript_mode = $dvi_mode = 0;
 
         :param file_url: The URL of the file.
         :type file_url: str
-        :param file_type: The file type ("main_tex" or "latexmkrc").
+        :param file_type: The file type ("tex" or "latexmkrc").
         :type file_type: str
         :return: The path to the LaTeX main file.
         """
@@ -405,7 +417,7 @@ $postscript_mode = $dvi_mode = 0;
                             # we match configs when they both have empty name or no name
                             elif (('name' not in config.keys() or config['name'] == '') and
                                   ('name' not in provided_config.keys() or provided_config['name'] == '')):
-                                for config_key, config_val in config:
+                                for config_key, config_val in config.items():
                                     # if keys are in default config and visualizations_to_make, we keep the value in
                                     # visualizations_to_make
                                     if config_key not in provided_config.keys():
@@ -457,12 +469,13 @@ $postscript_mode = $dvi_mode = 0;
                     file_name = re.sub( '(?<!^)(?=[A-Z])', '_', viz_class.__name__).lower()
 
                 # Save the figure
-                if viz_class.figure_file_extension == "tex":
-                    file_name += ".tex"
+                # the figure format is tex or bib: save the string directly in a file
+                if viz_class.figure_file_extension in ["tex", "bib"]:
+                    file_name += "." + viz_class.figure_file_extension
                     output_file = join(self.fig_dir_path, file_name)
                     with open(output_file, "w") as f:
                         f.write(fig)
-                # figure format is pdf:
+                # the figure format is pdf: save with plotly method
                 else:
                     file_name += ".pdf"
                     output_file = join(self.fig_dir_path, file_name)
@@ -506,21 +519,47 @@ $postscript_mode = $dvi_mode = 0;
             )
         else:
             try:
-                self.get_file_from_path(self.latex_main_file_path, "main_tex")
+                self.get_file_from_path(self.latex_main_file_path, "tex")
             except Exception as e:
                 error_msg = str(e)
                 # Check if the error is not one of the expected ones when there is no main tex file
-                if ("No main_tex file path provided" not in error_msg) and \
-                   ("main_tex file path does not exist:" not in error_msg) and \
-                   ("main_tex file path is not a file:" not in error_msg):
+                if ("No tex file path provided" not in error_msg) and \
+                   ("tex file path does not exist:" not in error_msg) and \
+                   ("tex file path is not a file:" not in error_msg):
                     log.error(error_msg)
                     warnings.warn("Could not get the LaTeX main tex file from the path, trying to get it from the URL")
                 try:
-                    self.get_file_from_url(self.latex_main_file_url, "main_tex")
+                    self.get_file_from_url(self.latex_main_file_url, "tex")
                 except Exception as url_e:
                     url_error_msg = str(url_e)
                     log.error(url_error_msg)
                     warnings.warn("Failed to add the main tex file to the project, ignoring this file")
+
+         # get the biblio tex file
+        if self.latex_biblio_file_url is None and self.latex_biblio_file_path is None:
+            warnings.warn(
+                "No biblio tex file path (latex_biblio_file_path) or URL provided (latex_biblio_file_url). "
+                "The report will be produced without the biblio tex file."
+            )
+        else:
+            try:
+                self.get_file_from_path(self.latex_biblio_file_path, "tex")
+            except Exception as e:
+                error_msg = str(e)
+                # Check if the error is not one of the expected ones when there is no main tex file
+                if ("No tex file path provided" not in error_msg) and \
+                   ("tex file path does not exist:" not in error_msg) and \
+                   ("tex file path is not a file:" not in error_msg):
+                    log.error(error_msg)
+                    warnings.warn(
+                        "Could not get the LaTeX biblio tex file from the path, trying to get it from the URL"
+                    )
+                try:
+                    self.get_file_from_url(self.latex_biblio_file_url, "tex")
+                except Exception as url_e:
+                    url_error_msg = str(url_e)
+                    log.error(url_error_msg)
+                    warnings.warn("Failed to add the biblio tex file to the project, ignoring this file")
 
         # get the latexmkrc file
         if self.latexmkrc_file_url is None and self.latexmkrc_file_path is None:

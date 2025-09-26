@@ -1,6 +1,9 @@
 from datetime import datetime
-import requests
+from os.path import join
 import logging
+import traceback
+
+import requests
 
 from dibisoplot.biso import AnrProjects
 from dibisoplot.biso import Chapters
@@ -12,6 +15,7 @@ from dibisoplot.biso import Journals
 from dibisoplot.biso import JournalsHal
 from dibisoplot.biso import OpenAccessWorks
 from dibisoplot.biso import PrivateSectorCollaborations
+from dibisoplot.biso import WorksBibtex
 from dibisoplot.biso import WorksType
 
 from dibisoreporting import DibisoReporting
@@ -41,6 +45,7 @@ class Biso(DibisoReporting):
         "JournalsHal": JournalsHal,
         "OpenAccessWorks": OpenAccessWorks,
         "PrivateSectorCollaborations": PrivateSectorCollaborations,
+        "WorksBibtex": WorksBibtex,
         "WorksType": WorksType
     }
 
@@ -114,6 +119,11 @@ class Biso(DibisoReporting):
                 "max_plotted_entities": 35
             }
         ],
+        "WorksBibtex": [
+            {
+                "max_plotted_entities": 10000
+            }
+        ],
         "WorksType": [{}],
     }
 
@@ -126,6 +136,8 @@ class Biso(DibisoReporting):
             lab_full_name: str = "",
             latex_main_file_path: str | None = None,
             latex_main_file_url: str | None = None,
+            latex_biblio_file_path: str | None = None,
+            latex_biblio_file_url: str | None = None,
             latex_template_path: str | None = None,
             latex_template_url: str | None = None,
             max_entities: int | None = 1000,
@@ -153,6 +165,14 @@ class Biso(DibisoReporting):
         :param latex_main_file_url: URL to download a single LaTeX main file. It will download the file directly
             to root_path. Default to None. If None, doesn't try getting the main file from the URL.
         :type latex_main_file_url: str | None, optional
+        :param latex_biblio_file_path: Path to a single LaTeX biblio file. This file is the one to use to compile the
+            bibliography. It will copy the biblio file to root_path. Default to None. If None, doesn't try getting the
+            biblio file from the path. If both latex_biblio_file_path and latex_biblio_file_url are not None, the
+            library will first try to get the biblio file from the path.
+        :type latex_biblio_file_path: str | None, optional
+        :param latex_biblio_file_url: URL to download a single LaTeX biblio file. It will download the file directly
+            to root_path. Default to None. If None, doesn't try getting the biblio file from the URL.
+        :type latex_biblio_file_url: str | None, optional
         :param latex_template_path: Path to the LaTeX template files. It will copy the templates files to root_path.
             Default to None. If None, doesn't try getting the template from the path. If both latex_template_path and
             latex_template_url are not None, the library will first try to get the template from the path.
@@ -179,6 +199,8 @@ class Biso(DibisoReporting):
             year,
             latex_main_file_path=latex_main_file_path,
             latex_main_file_url=latex_main_file_url,
+            latex_biblio_file_path=latex_biblio_file_path,
+            latex_biblio_file_url=latex_biblio_file_url,
             latex_template_path=latex_template_path,
             latex_template_url=latex_template_url,
             max_entities=max_entities,
