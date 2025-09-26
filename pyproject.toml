@@ -24,6 +24,7 @@ classifiers = [
 keywords = ["DiBISO", "Data analysis", "Scientific research", "Plotly", "LaTeX"]
 dependencies = [
     "dibisoplot>=0.5",
+    "requests",
     "pdfCropMargins",
     "pypdf",
     "kaleido==0.2.1"
