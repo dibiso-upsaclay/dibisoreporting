@@ -22,7 +22,11 @@ This comes from the default value of ``default_visualizations`` :
 .. code-block:: python
 
     default_visualizations =  {
-        "AnrProjects": [{}],
+        "AnrProjects": [
+            {
+                "max_plotted_entities": 20
+            }
+        ],
         "Chapters": [{}],
         "CollaborationMap": [
             {
@@ -42,11 +46,20 @@ This comes from the default value of ``default_visualizations`` :
         ],
         "CollaborationNames": [
             {
-                "countries_to_exclude": ["fr"]
+                "countries_to_exclude": ["fr"],
+                "max_plotted_entities": 40
             }
         ],
-        "Conferences": [{}],
-        "EuropeanProjects": [{}],
+        "Conferences": [
+            {
+                "max_plotted_entities": 40
+            }
+        ],
+        "EuropeanProjects": [
+            {
+                "max_plotted_entities": 20
+            }
+        ],
         "Journals": [
             {
                 "stats_to_save": {
@@ -57,7 +70,11 @@ This comes from the default value of ``default_visualizations`` :
                 },
             }
         ],
-        "JournalsHal": [{}],
+        "JournalsHal": [
+            {
+                "max_plotted_entities": 40
+            }
+        ],
         "OpenAccessWorks": [
             {
                 "stats_to_save": {
@@ -65,7 +82,16 @@ This comes from the default value of ``default_visualizations`` :
                 }
             }
         ],
-        "PrivateSectorCollaborations": [{}],
+        "PrivateSectorCollaborations": [
+            {
+                "max_plotted_entities": 35
+            }
+        ],
+        "WorksBibtex": [
+            {
+                "max_plotted_entities": 10000
+            }
+        ],
         "WorksType": [{}],
     }
 
