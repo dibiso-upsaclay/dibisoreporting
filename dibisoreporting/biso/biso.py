@@ -121,7 +121,7 @@ class Biso(DibisoReporting):
         ],
         "WorksBibtex": [
             {
-                "max_plotted_entities": 10000
+                "max_plotted_entities": 1000
             }
         ],
         "WorksType": [{}],
