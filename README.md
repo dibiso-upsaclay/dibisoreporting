@@ -2,6 +2,12 @@
 
 A Python library for generating bibliometric reports, developed at the [DiBISO](https://www.bibliotheques.universite-paris-saclay.fr/en/department-libraries-information-and-open-science-dibiso-and-its-missions).
 
+Install with:
+
+```bash
+pip install dibisoreporting
+```
+
 The library contains the following submodules:
   - `biso`: reporting for the BiSO (Open-Science Report)
 
