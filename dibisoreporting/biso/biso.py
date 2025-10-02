@@ -1,7 +1,5 @@
 from datetime import datetime
-from os.path import join
 import logging
-import traceback
 
 import requests
 
