@@ -20,6 +20,9 @@ from dibisoreporting import DibisoReporting
 
 from dibisoreporting.utils import escape_for_latex
 
+from dibisoplot._version import __version__ as dibisoplot_version
+from dibisoreporting._version import __version__ as dibisoreporting_version
+
 
 class Biso(DibisoReporting):
     """
@@ -279,6 +282,9 @@ class Biso(DibisoReporting):
         self.add_marco("labfullname", escape_for_latex(self.lab_full_name))
         self.add_marco("datafetchdate", escape_for_latex(self.data_fetch_date))
         self.add_marco("watermarktext", escape_for_latex(self.watermark_text))
+        self.macros.append("")
+        self.add_marco("dibisoplotversion", escape_for_latex(dibisoplot_version))
+        self.add_marco("dibisoreportingversion", escape_for_latex(dibisoreporting_version))
         self.macros.append("")
 
         super().generate_report(visualizations_to_make, import_default_visualizations)
