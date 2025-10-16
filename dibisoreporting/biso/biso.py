@@ -133,8 +133,8 @@ class Biso(DibisoReporting):
             self,
             entity_id,
             year: int | None = None,
-            lab_acronym: str = "",
-            lab_full_name: str = "",
+            entity_acronym: str = "",
+            entity_full_name: str = "",
             latex_main_file_path: str | None = None,
             latex_main_file_url: str | None = None,
             latex_biblio_file_path: str | None = None,
@@ -150,14 +150,14 @@ class Biso(DibisoReporting):
         """
         Initialize the Biso class with the given parameters.
 
-        :param entity_id: The HAL collection identifier. This usually refers to the lab acronym.
+        :param entity_id: The HAL collection identifier. This usually refers to the entity acronym.
         :type entity_id: str
         :param year: The year for which to fetch data. If None, uses the current year.
         :type year: int | None, optional
-        :param lab_acronym: The full acronym of the lab. Default to entity_id.
-        :type lab_acronym: str
-        :param lab_full_name: The full name of the lab.
-        :type lab_full_name: str
+        :param entity_acronym: The full acronym of the entity. Default to entity_id.
+        :type entity_acronym: str
+        :param entity_full_name: The full name of the entity.
+        :type entity_full_name: str
         :param latex_main_file_path: Path to a single LaTeX main file. This file is the one to use to compile the
             report. It will copy the main file to root_path. Default to None. If None, doesn't try getting the main file
             from the path. If both latex_main_file_path and latex_main_file_url are not None, the library will first try
@@ -209,10 +209,10 @@ class Biso(DibisoReporting):
             root_path = root_path
         )
 
-        if not lab_acronym:
-            lab_acronym = str(entity_id)
-        self.lab_acronym = lab_acronym
-        self.lab_full_name = lab_full_name
+        if not entity_acronym:
+            entity_acronym = str(entity_id)
+        self.entity_acronym = entity_acronym
+        self.entity_full_name = entity_full_name
         self.watermark_text = watermark_text
 
         self.data_fetch_date = datetime.now().strftime("%d/%m/%Y")
@@ -278,8 +278,8 @@ class Biso(DibisoReporting):
 
         self.add_marco("reportyear", escape_for_latex(str(self.year)))
         self.add_marco("halcollectionid", escape_for_latex(self.entity_id))
-        self.add_marco("labacronym", escape_for_latex(self.lab_acronym))
-        self.add_marco("labfullname", escape_for_latex(self.lab_full_name))
+        self.add_marco("labacronym", escape_for_latex(self.entity_acronym))
+        self.add_marco("labfullname", escape_for_latex(self.entity_full_name))
         self.add_marco("datafetchdate", escape_for_latex(self.data_fetch_date))
         self.add_marco("watermarktext", escape_for_latex(self.watermark_text))
         self.macros.append("")

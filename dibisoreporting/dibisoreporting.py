@@ -443,8 +443,8 @@ $postscript_mode = $dvi_mode = 0;
                 name = config.get("name", "")
                 stats_to_save = config.get("stats_to_save", {})
                 params = {k: v for k, v in config.items() if k != "name" and k != "stats_to_save"}
-                if "lab" not in params:
-                    params["lab"] = self.entity_id
+                if "entity_id" not in params:
+                    params["entity_id"] = self.entity_id
                 if "year" not in params:
                     params["year"] = self.year
                 if "max_entities" not in params:
