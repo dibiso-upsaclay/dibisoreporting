@@ -156,6 +156,18 @@ $postscript_mode = $dvi_mode = 0;
         self.kwargs = kwargs
 
 
+    def add_marco(self, name: str, value):
+        """
+        Add a LaTeX macro to the report.
+
+        :param name: Name of the macro.
+        :type name: str
+        :param value: Value of the macro.
+        :return:
+        """
+        self.macros.append("\\newcommand{\\" + name + "}{" + str(value) + "}")
+
+
     def get_file_from_path(self, file_path: str, file_type: str):
         """
         If file_path is not None, get the file from a local path.

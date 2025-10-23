@@ -29,7 +29,7 @@ class Biso(DibisoReporting):
     Class to generate the BiSO report
 
     :cvar class_mapping: Dictionary that maps class names to actual classes
-    :cvar default_plot_main_color: Default color for the main plot ()
+    :cvar default_plot_main_color: Default color for the main plot (#004e7d)
     :cvar default_visualizations: Dictionary contains each type of plot to include in the report with the parameters of
         each plot.
     """
@@ -222,10 +222,6 @@ class Biso(DibisoReporting):
         self.data_fetch_date = datetime.now().strftime("%d/%m/%Y")
 
         self.kwargs = kwargs
-
-
-    def add_marco(self, name, value):
-        self.macros.append("\\newcommand{\\" + name + "}{" + str(value) + "}")
 
 
     def generate_report(
