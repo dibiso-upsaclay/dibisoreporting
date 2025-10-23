@@ -51,7 +51,7 @@ $postscript_mode = $dvi_mode = 0;
 
     def __init__(
             self,
-            entity_id = "",
+            entity_id: str = "",
             year: int | None = None,
             latex_main_file_path: str | None = None,
             latex_main_file_url: str | None = None,

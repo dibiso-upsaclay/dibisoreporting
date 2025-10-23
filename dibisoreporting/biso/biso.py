@@ -131,7 +131,7 @@ class Biso(DibisoReporting):
 
     def __init__(
             self,
-            entity_id,
+            entity_id: str,
             year: int | None = None,
             entity_acronym: str = "",
             entity_full_name: str = "",
