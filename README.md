@@ -10,6 +10,7 @@ pip install dibisoreporting
 
 The library contains the following submodules:
   - `biso`: reporting for the BiSO (Open-Science Report)
+  - `pubpart`: reporting about publications and partnerships
 
 
 Homepage: https://pypi.org/project/dibisoreporting/
