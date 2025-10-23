@@ -143,6 +143,7 @@ class Biso(DibisoReporting):
             latex_template_url: str | None = None,
             max_entities: int | None = 1000,
             max_plotted_entities: int = 25,
+            plot_main_color: str | None = None,
             root_path: str | None = None,
             watermark_text: str = "",
             **kwargs
@@ -189,6 +190,8 @@ class Biso(DibisoReporting):
         :type max_entities: int | None, optional
         :param max_plotted_entities: Maximum number of bars in the plot or rows in the table. Default to 25.
         :type max_plotted_entities: int, optional
+        :param plot_main_color: Main color used in the plots. Default to "blue". Plotly color.
+        :type plot_main_color: str, optional
         :param root_path: Path to the root directory where the report and figures will be generated.
         :type root_path: str
         :param watermark_text: The text to be used as a watermark in the report. Default to "" (no watermark).
@@ -206,6 +209,7 @@ class Biso(DibisoReporting):
             latex_template_url=latex_template_url,
             max_entities=max_entities,
             max_plotted_entities=max_plotted_entities,
+            plot_main_color=plot_main_color,
             root_path = root_path
         )
 
