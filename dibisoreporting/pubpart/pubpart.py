@@ -41,8 +41,14 @@ class PubPart(DibisoReporting):
         "TopicsCollaborations": [{}],
         "TopicsPotentialCollaborations": [{}],
         "WorksCollaborations": [
-            {"name": "citationsnormalized", "metric": "citation_normalized_percentile"},
-            {"name": "citationscount", "metric": "cited_by_count"},
+            {
+                "name": "citationsnormalized",
+                "metric": "citation_normalized_percentile"
+            },
+            {
+                "name": "citationscount",
+                "metric": "cited_by_count"
+            },
         ],
     }
 
