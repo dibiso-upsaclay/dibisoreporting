@@ -1,4 +1,4 @@
-BiSO
+Biso
 ====
 
 Class to generate a BISO report.
@@ -105,7 +105,7 @@ library and and ``collaborationsnb`` is the name of the LaTeX macro containing t
 callable with ``\collaborationsnb``.
 The plotting library needs to return those variables in a dictionary returned by the method ``fetch_data()``.
 
-The BiSO Class
+The Biso Class
 --------------
 
 .. autoclass:: dibisoreporting.biso.Biso
@@ -113,4 +113,3 @@ The BiSO Class
    :show-inheritance:
    :inherited-members:
    :undoc-members:
-   :exclude-members: class_mapping
