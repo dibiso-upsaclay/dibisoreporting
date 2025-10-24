@@ -13,7 +13,7 @@ dibisoreporting.egg-info
 !sphinx-doc/notebooks/biso.ipynb
 !sphinx-doc/notebooks/pubpart.ipynb
 
-sphinx-doc/notebooks/test_report
+sphinx-doc/notebooks/biso_report
 sphinx-doc/notebooks/pubpart_report
 
 docs
