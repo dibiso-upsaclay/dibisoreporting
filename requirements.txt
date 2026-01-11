@@ -1,4 +1,4 @@
-dibisoplot>=0.7
+dibisoplot>=0.9
 requests
 pdfCropMargins
 pypdf
