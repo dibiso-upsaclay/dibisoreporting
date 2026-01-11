@@ -41,3 +41,4 @@ version = { attr = "dibisoreporting._version.__version__" }
 Homepage = "https://pypi.org/project/dibisoreporting/"
 Repository = "https://github.com/dibiso-upsaclay/dibisoreporting"
 Documentation = "https://dibiso-upsaclay.github.io/dibisoreporting/"
+DOI = "https://doi.org/10.5281/zenodo.17251577"

@@ -21,6 +21,8 @@ Documentation: https://dibiso-upsaclay.github.io/dibisoreporting/
 
 Repository URL: https://github.com/dibiso-upsaclay/dibisoreporting
 
+Repository DOI: https://doi.org/10.5281/zenodo.17251577
+
 Technical report: https://universite-paris-saclay.hal.science/hal-05336463
 
 Romain THOMAS 2025  
